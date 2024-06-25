@@ -8,32 +8,37 @@
 - ソースコードの文字列を解析して、`TokenType`をつけて、`AST`に変換する処理をしやすくする。
 - エラーを報告し、トークン化を中断しないようにする。
 
+## Thinks
+- バインドするとき以外はoutしか最初にくる文字がない。
+つまり、outじゃない時は全てバインドになる。
+バインド名のあとは、引数か区切り文字。
+
 ## TokenType
 ` rust
 enum TokenType {
-  Keyword::Input,
-  Keyword::Out,
-  Identifier::Var,
-  Identifier::Fn,
-  Operator::Not,
-  Operator::Or,
-  Comment
+  Keyword, // 'input', 'out'
+  Operator, // 'not', 'or'
+  Identifier, // 'var', 'fn'
+  Delimiter // ':'
+  Literal, //'1', '0'
+  Comment, // '//'
+  Error,
 }
 `
 
 ## Struct
 ` rust
-enum Position {
+struct Position {
   line: u32,
   column: u32,
 }
 
-enum Tokenizer {
+struct Token {
   token_type: TokenType,
   token_data: String,
 }
 
-enum Token {
+struct Tokenizer {
  inputs: Vec<String>,
  tokens: Vec<Token>,
  position: Position,
