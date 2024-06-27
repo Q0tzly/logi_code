@@ -5,7 +5,6 @@ enum TokenType {
     Identifier,
     Delimiter,
     Literal,
-    Comment,
     Error,
 }
 
@@ -39,10 +38,7 @@ impl Tokenizer {
         for line in &self.inputs {
             let mut token = vec![];
             if Self::is_comment(&line) {
-                let _ = token.push(Token {
-                    token_type: TokenType::Comment,
-                    token_data: line.clone(),
-                });
+                continue;
             } else {
                 let columns = line.split_whitespace();
 
@@ -121,8 +117,8 @@ mod tests {
         assert_eq!(
             tokens,
             &vec![vec![Token {
-                token_type: crate::lexer::TokenType::Comment,
-                token_data: "// Hello".to_string(),
+                token_type: crate::lexer::TokenType::Error,
+                token_data: "".to_string(),
             },]]
         );
     }
