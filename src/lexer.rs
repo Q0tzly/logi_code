@@ -18,12 +18,11 @@ struct Position {
 struct Token {
     token_type: TokenType,
     token_data: String,
-    token_line: u32,
 }
 
 pub struct Tokenizer {
     inputs: Vec<String>,
-    tokens: Vec<Token>,
+    tokens: Vec<Vec<Token>>,
     position: Position,
 }
 
@@ -38,11 +37,11 @@ impl Tokenizer {
 
     pub fn tokenize(&mut self) {
         for line in &self.inputs {
+            let mut token = vec![];
             if Self::is_comment(&line) {
-                let _ = &self.tokens.push(Token {
+                let _ = token.push(Token {
                     token_type: TokenType::Comment,
                     token_data: line.clone(),
-                    token_line: self.position.line,
                 });
             } else {
                 let columns = line.split_whitespace();
@@ -62,19 +61,19 @@ impl Tokenizer {
                         TokenType::Error
                     };
 
-                    let _ = &self.tokens.push(Token {
+                    let _ = token.push(Token {
                         token_type: t_type,
                         token_data: column.to_string(),
-                        token_line: self.position.line,
                     });
                     self.position.column += 1;
                 }
             };
             self.position.line += 1;
+            let _ = &self.tokens.push(token);
         }
     }
 
-    fn get_tokens(&self) -> &Vec<Token> {
+    fn get_tokens(&self) -> &Vec<Vec<Token>> {
         &self.tokens
     }
 
@@ -121,11 +120,10 @@ mod tests {
         let tokens = tokenizer.get_tokens();
         assert_eq!(
             tokens,
-            &vec![Token {
+            &vec![vec![Token {
                 token_type: crate::lexer::TokenType::Comment,
                 token_data: "// Hello".to_string(),
-                token_line: 0,
-            },]
+            },]]
         );
     }
 }
