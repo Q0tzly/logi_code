@@ -1,30 +1,16 @@
 #[derive(Debug, PartialEq)]
-enum TokenType {
-    Keyword,
-    Operator,
-    Identifier,
-    Delimiter,
-    Literal,
-    Comment,
-    Error,
-}
-
-struct Position {
-    line: u32,
-    column: u32,
-}
-
-#[derive(Debug, PartialEq)]
-struct Token {
-    token_type: TokenType,
-    token_data: String,
-    token_line: u32,
+pub enum Token {
+    Keyword(String),
+    Operator(String),
+    Identifier(String),
+    Delimiter(String),
+    Literal(String),
+    Error(String),
 }
 
 pub struct Tokenizer {
     inputs: Vec<String>,
-    tokens: Vec<Token>,
-    position: Position,
+    tokens: Vec<Vec<Token>>,
 }
 
 impl Tokenizer {
@@ -32,49 +18,38 @@ impl Tokenizer {
         Self {
             inputs: input,
             tokens: vec![],
-            position: Position { line: 0, column: 0 },
         }
     }
 
     pub fn tokenize(&mut self) {
         for line in &self.inputs {
+            let mut token = vec![];
             if Self::is_comment(&line) {
-                let _ = &self.tokens.push(Token {
-                    token_type: TokenType::Comment,
-                    token_data: line.clone(),
-                    token_line: self.position.line,
-                });
+                continue;
             } else {
                 let columns = line.split_whitespace();
 
                 for column in columns {
-                    let t_type = if Self::is_keyword(&column) {
-                        TokenType::Keyword
-                    } else if Self::is_operator(&column) {
-                        TokenType::Operator
-                    } else if Self::is_identifier(&column) {
-                        TokenType::Identifier
-                    } else if Self::is_delimiter(&column) {
-                        TokenType::Delimiter
-                    } else if Self::is_literal(&column) {
-                        TokenType::Literal
+                    let _ = token.push(if Self::is_keyword(column) {
+                        Token::Keyword(column.to_string())
+                    } else if Self::is_operator(column) {
+                        Token::Operator(column.to_string())
+                    } else if Self::is_identifier(column) {
+                        Token::Identifier(column.to_string())
+                    } else if Self::is_delimiter(column) {
+                        Token::Delimiter(column.to_string())
+                    } else if Self::is_literal(column) {
+                        Token::Literal(column.to_string())
                     } else {
-                        TokenType::Error
-                    };
-
-                    let _ = &self.tokens.push(Token {
-                        token_type: t_type,
-                        token_data: column.to_string(),
-                        token_line: self.position.line,
+                        Token::Error(column.to_string())
                     });
-                    self.position.column += 1;
                 }
             };
-            self.position.line += 1;
+            let _ = &self.tokens.push(token);
         }
     }
 
-    fn get_tokens(&self) -> &Vec<Token> {
+    fn get_tokens(&self) -> &Vec<Vec<Token>> {
         &self.tokens
     }
 
@@ -119,13 +94,6 @@ mod tests {
         let mut tokenizer = Tokenizer::new(input);
         tokenizer.tokenize();
         let tokens = tokenizer.get_tokens();
-        assert_eq!(
-            tokens,
-            &vec![Token {
-                token_type: crate::lexer::TokenType::Comment,
-                token_data: "// Hello".to_string(),
-                token_line: 0,
-            },]
-        );
+        assert_eq!(tokens, &vec![vec![Token::Error("Hello".to_string()),]]);
     }
 }
