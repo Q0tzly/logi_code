@@ -13,6 +13,22 @@
 つまり、outじゃない時は全てバインドになる。
 バインド名のあとは、引数か区切り文字。
 
+`
+enum Token {
+    Keyword(String),
+    Delimiter(String),
+    Identifier(String),
+    Literal(String),
+    Operator(String),
+    Comment(String),
+}
+
+struct Tokenizer {
+  inputs: Vec<String>,
+  tokens: Vec<Vec<Token>>,
+}
+`
+
 ## TokenType
 ` rust
 enum TokenType {
