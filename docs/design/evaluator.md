@@ -74,6 +74,14 @@ Statement(Output(["C"]))
 - fn_listから、nameと一致するものを探す。見つからなかったら、エラーを吐く。
 - 見つかったら、inputとinputsの順番を同じようにして、expressionに代入した後、それを評価する。
 
+
+- 引数の部分を実際の値に入れ替える。
+- Expression::最初の演算子 として、evalute_expressionにかける。
+
+- 引数を評価する
+- 引数を順番に、(name: 関数の引数の名前, value: 評価した値)として、var_listに追加したEvaluter::new()を作る。
+- 評価する。
+
 ## Usage
 ` rust
 input: Vec<ASTNode>
