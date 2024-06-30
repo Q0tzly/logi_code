@@ -5,6 +5,7 @@
 
 ## Release Version : 1.0.0
 - 初期リリースをする。
+- crate.ioにアップしたり、GitHubにリリースバージョンの実行ファイルを置いたりする。
 
 ## Implementation AnyThings : 0.9.0
 - README.mdを書いたり、いろんなところを調整する。
