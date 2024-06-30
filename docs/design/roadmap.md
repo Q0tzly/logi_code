@@ -23,5 +23,8 @@
 ## Implementation Evaluator : 0.5.0
 - evaluatorの仮実装を完了させる。
 
-## Current Version : 0.4.0
+## Fix : 0.4.1 - Current
+- callのinputsに演算子があるとエラーを吐くのを修正する。
+
+## Implementation Parser : 0.4.0
 - Parserの仮実装が終わった。
