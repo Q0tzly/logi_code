@@ -15,6 +15,9 @@
 - 入力なしのバインドの時は、外部の変数も使える。
 - 何も書かれてない行(改行文字とスペースはあってもいい)の時、トークンは何もない`[]`を吐き出すので、それの対処も必要。
 
+## Fix
+- Callの引数に変数以外が含まれていると、エラーをはく。
+
 ## AstType
 ` rust
 enum AstType {
@@ -43,7 +46,7 @@ struct Parser {
 }
 `
 
-## WorkFrow
+## WorkFlow
 ### Program
 #### Overview
 for文でVec<Vec<Token>>(プログラム)からVec<Token>(行に当たる)を取り出す。

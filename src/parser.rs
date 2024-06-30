@@ -14,7 +14,7 @@ pub enum Expression {
     // Function
     Call {
         name: String,
-        input: Vec<String>,
+        input: Vec<Expression>,
     },
 }
 
@@ -36,6 +36,7 @@ pub enum Statement {
 #[derive(Debug, PartialEq, Clone)]
 pub enum ASTNode {
     Statement(Statement),
+    Expression(Expression),
 }
 
 #[derive(Debug)]
@@ -87,8 +88,13 @@ impl Parser {
                     iter.next();
                     if Some(&Token::Delimiter(":".to_string())) == iter.next() {
                         let mut inputs = vec![];
+                        let mut iter_all = iter.clone().cloned();
+                        if !iter_all.all(|token| matches!(token, Token::Identifier(_))) {
+                            return Err("Expected all tokens to be identifiers".to_string());
+                        }
                         while let Some(Token::Identifier(name)) = iter.next() {
                             inputs.push(name.clone());
+                            println!("while");
                         }
                         return Ok(ASTNode::Statement(Statement::Input(inputs)));
                     }
@@ -97,6 +103,10 @@ impl Parser {
                     iter.next();
                     if Some(&Token::Delimiter(":".to_string())) == iter.next() {
                         let mut outputs = vec![];
+                        let mut iter_all = iter.clone().cloned();
+                        if !iter_all.all(|token| matches!(token, Token::Identifier(_))) {
+                            return Err("Expected all tokens to be identifiers".to_string());
+                        }
                         while let Some(Token::Identifier(name)) = iter.next() {
                             outputs.push(name.clone());
                         }
@@ -173,10 +183,12 @@ impl Parser {
             }
             Token::Identifier(fn_name) => {
                 if let Some(fn_info) = self.fn_list.iter().find(|f| &f.name == fn_name) {
-                    let mut inputs: Vec<String> = vec![];
+                    let mut inputs: Vec<Expression> = vec![];
                     for _ in 0..fn_info.input {
-                        if let Some(Token::Identifier(name)) = tokens.next() {
-                            inputs.push(name.to_string());
+                        if let Some(expr) = self.parse_expression(tokens) {
+                            inputs.push(expr);
+                        } else {
+                            return None;
                         }
                     }
                     Some(Expression::Call {
@@ -237,8 +249,11 @@ mod tests {
                 Token::Identifier("C".to_string()),
                 Token::Delimiter(":".to_string()),
                 Token::Identifier("and".to_string()),
+                Token::Identifier("and".to_string()),
                 Token::Identifier("A".to_string()),
+                Token::Operator("not".to_string()),
                 Token::Identifier("B".to_string()),
+                Token::Literal("0".to_string()),
             ],
             //clear
             vec![],
