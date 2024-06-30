@@ -1,4 +1,4 @@
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum Token {
     Keyword(String),
     Operator(String),
@@ -49,7 +49,7 @@ impl Tokenizer {
         }
     }
 
-    fn get_tokens(&self) -> &Vec<Vec<Token>> {
+    pub fn get_tokens(&self) -> &Vec<Vec<Token>> {
         &self.tokens
     }
 
@@ -87,10 +87,13 @@ mod tests {
     fn test_lexer() {
         let input: Vec<String> = vec![
             "input : A\n".to_string(),
+            "and A B : not or not A not B".to_string(),
             "B : 1\n".to_string(),
-            "C : or A B\n".to_string(),
-            "out C".to_string(),
+            "C : and A B\n".to_string(),
+            "".to_string(),
+            "out : C".to_string(),
         ];
+
         let mut tokenizer = Tokenizer::new(input);
         tokenizer.tokenize();
         let tokens = tokenizer.get_tokens();
