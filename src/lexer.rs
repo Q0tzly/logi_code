@@ -49,7 +49,7 @@ impl Tokenizer {
         }
     }
 
-    fn get_tokens(&self) -> &Vec<Vec<Token>> {
+    pub fn get_tokens(&self) -> &Vec<Vec<Token>> {
         &self.tokens
     }
 
