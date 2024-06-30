@@ -61,7 +61,7 @@ struct Tokenizer {
 }
 `
 
-## WorkFrow
+## WorkFlow
 input: Vec<String> (行ごとに文字列を分けておく。)
 tokenizer = Tokenize::new(input)
 tokenizer.tokenize()
