@@ -36,6 +36,7 @@ pub enum Statement {
 #[derive(Debug, PartialEq, Clone)]
 pub enum ASTNode {
     Statement(Statement),
+    Expression(Expression),
 }
 
 #[derive(Debug)]
@@ -87,11 +88,13 @@ impl Parser {
                     iter.next();
                     if Some(&Token::Delimiter(":".to_string())) == iter.next() {
                         let mut inputs = vec![];
-                        if !iter.all(|token| matches!(token, Token::Identifier(_))) {
+                        let mut iter_all = iter.clone().cloned();
+                        if !iter_all.all(|token| matches!(token, Token::Identifier(_))) {
                             return Err("Expected all tokens to be identifiers".to_string());
                         }
                         while let Some(Token::Identifier(name)) = iter.next() {
                             inputs.push(name.clone());
+                            println!("while");
                         }
                         return Ok(ASTNode::Statement(Statement::Input(inputs)));
                     }
@@ -100,7 +103,8 @@ impl Parser {
                     iter.next();
                     if Some(&Token::Delimiter(":".to_string())) == iter.next() {
                         let mut outputs = vec![];
-                        if !iter.all(|token| matches!(token, Token::Identifier(_))) {
+                        let mut iter_all = iter.clone().cloned();
+                        if !iter_all.all(|token| matches!(token, Token::Identifier(_))) {
                             return Err("Expected all tokens to be identifiers".to_string());
                         }
                         while let Some(Token::Identifier(name)) = iter.next() {
