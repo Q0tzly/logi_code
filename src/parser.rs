@@ -1,7 +1,7 @@
 use crate::lexer::Token;
 
-#[derive(Debug, PartialEq)]
-enum Expression {
+#[derive(Debug, PartialEq, Clone)]
+pub enum Expression {
     Identifier(String), // Variable
     Literal(bool),
     NOT {
@@ -18,8 +18,8 @@ enum Expression {
     },
 }
 
-#[derive(Debug, PartialEq)]
-enum Statement {
+#[derive(Debug, PartialEq, Clone)]
+pub enum Statement {
     BindVariable {
         name: String,
         expression: Box<Expression>,
@@ -33,16 +33,24 @@ enum Statement {
     Output(Vec<String>),
 }
 
-#[derive(Debug, PartialEq)]
-enum ASTNode {
+#[derive(Debug, PartialEq, Clone)]
+pub enum ASTNode {
     Statement(Statement),
 }
 
+#[derive(Debug)]
+pub struct Fn {
+    name: String,
+    input: u32,
+}
+
+// 現在のpositionとかで、inputsを複製しなくてもいい書き方に書き換える
 #[derive(Debug)]
 pub struct Parser {
     inputs: Vec<Vec<Token>>,
     ast: Vec<ASTNode>,
     error: Vec<String>,
+    fn_list: Vec<Fn>,
 }
 
 impl Parser {
@@ -51,22 +59,27 @@ impl Parser {
             inputs: input,
             ast: vec![],
             error: vec![],
+            fn_list: vec![],
         }
     }
 
     pub fn parse(&mut self) {
-        for line in &self.inputs {
+        for line in self.inputs.clone() {
             if line.is_empty() {
                 continue;
             }
-            match Self::parse_statement(line) {
-                Ok(node) => self.ast.push(node),
-                Err(e) => self.error.push(e),
+            let result = &self.parse_statement(&line);
+            match result {
+                Ok(node) => {
+                    self.ast.push(node.clone());
+                    self.error.push("".to_string())
+                }
+                Err(e) => self.error.push(e.to_string()),
             }
         }
     }
 
-    fn parse_statement(input: &Vec<Token>) -> Result<ASTNode, String> {
+    fn parse_statement(&mut self, input: &Vec<Token>) -> Result<ASTNode, String> {
         let mut iter = input.iter().peekable();
         if let Some(Token::Keyword(keyword)) = iter.peek() {
             match keyword.as_str() {
@@ -96,8 +109,9 @@ impl Parser {
 
         if let Some(Token::Identifier(name)) = iter.next() {
             if name.chars().next().unwrap().is_uppercase()
-                && Some(&Token::Delimiter(":".to_string())) == iter.next()
+                && Some(&Token::Delimiter(":".to_string())) == iter.peek().cloned()
             {
+                iter.next();
                 if let Some(expression) = Self::parse_expression(&mut iter) {
                     if iter.peek().is_none() {
                         return Ok(ASTNode::Statement(Statement::BindVariable {
@@ -108,12 +122,20 @@ impl Parser {
                 }
             } else {
                 let mut inputs = vec![];
-                while let Some(Token::Identifier(name)) = iter.next() {
+                let mut list: u32 = 0;
+                while let Some(Token::Identifier(name)) = iter.peek() {
                     inputs.push(name.clone());
+                    iter.next();
+                    list += 1;
                 }
+                println!("{:?}", iter.peek());
                 if Some(&Token::Delimiter(":".to_string())) == iter.next() {
                     if let Some(expression) = Self::parse_expression(&mut iter) {
                         if iter.peek().is_none() {
+                            let _ = &self.fn_list.push(Fn {
+                                name: name.clone(),
+                                input: list,
+                            });
                             return Ok(ASTNode::Statement(Statement::BindFunction {
                                 name: name.clone(),
                                 input: inputs,
@@ -213,6 +235,9 @@ mod tests {
         let mut parser = Parser::new(input);
         parser.parse();
         let ast = parser.get_ast();
+        let error = parser.get_error();
+        println!("{:?}", parser.fn_list);
+        println!("Error:\n{:?}", error);
         assert_eq!(
             ast,
             &vec![ASTNode::Statement(Statement::Input(vec!["B".to_string()]))]
