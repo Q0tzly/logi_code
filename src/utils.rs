@@ -10,8 +10,8 @@ pub fn std_input(options: &Vec<String>) -> Vec<bool> {
     let mut selections = vec![false; options.len()];
     let mut selected_index = 0;
 
+    write!(stdout, "{}[2J", 27 as char).unwrap();
     loop {
-        write!(stdout, "{}[2J", 27 as char).unwrap();
         write!(stdout, "{}[H", 27 as char).unwrap();
 
         for (index, option) in options.iter().enumerate() {
@@ -39,7 +39,6 @@ pub fn std_input(options: &Vec<String>) -> Vec<bool> {
         }
     }
 
-    write!(stdout, "{}[2J", 27 as char).unwrap();
     write!(stdout, "{}[H", 27 as char).unwrap();
     write!(stdout, "in  > ").unwrap();
     for (index, (option, selected)) in options.iter().zip(selections.iter()).enumerate() {
