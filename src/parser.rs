@@ -112,7 +112,7 @@ impl Parser {
                 && Some(&Token::Delimiter(":".to_string())) == iter.peek().cloned()
             {
                 iter.next();
-                if let Some(expression) = Self::parse_expression(&mut iter) {
+                if let Some(expression) = self.parse_expression(&mut iter) {
                     if iter.peek().is_none() {
                         return Ok(ASTNode::Statement(Statement::BindVariable {
                             name: name.clone(),
@@ -130,7 +130,7 @@ impl Parser {
                 }
                 println!("{:?}", iter.peek());
                 if Some(&Token::Delimiter(":".to_string())) == iter.next() {
-                    if let Some(expression) = Self::parse_expression(&mut iter) {
+                    if let Some(expression) = self.parse_expression(&mut iter) {
                         if iter.peek().is_none() {
                             let _ = &self.fn_list.push(Fn {
                                 name: name.clone(),
@@ -149,29 +149,47 @@ impl Parser {
         Err("Unable to parse line".to_string())
     }
 
-    fn parse_expression<'a, I>(tokens: &mut std::iter::Peekable<I>) -> Option<Expression>
+    fn parse_expression<'a, I>(&self, tokens: &mut std::iter::Peekable<I>) -> Option<Expression>
     where
         I: Iterator<Item = &'a Token>,
     {
         let token = tokens.next()?;
         match token {
-            Token::Identifier(name) => Some(Expression::Identifier(name.clone())),
-            Token::Literal(value) if value == "1" => Some(Expression::Literal(true)),
-            Token::Literal(value) if value == "0" => Some(Expression::Literal(false)),
             Token::Operator(op) if op == "not" => {
-                let operand = Self::parse_expression(tokens)?;
+                let operand = self.parse_expression(tokens)?;
                 Some(Expression::NOT {
                     operand: Box::new(operand),
                 })
             }
             Token::Operator(op) if op == "or" => {
-                let left = Self::parse_expression(tokens)?;
-                let right = Self::parse_expression(tokens)?;
+                let left = &self.parse_expression(tokens)?;
+                let right = &self.parse_expression(tokens)?;
                 Some(Expression::OR {
-                    left: Box::new(left),
-                    right: Box::new(right),
+                    left: Box::new(left.clone()),
+                    right: Box::new(right.clone()),
                 })
             }
+            Token::Identifier(name) if name.chars().next().unwrap().is_uppercase() => {
+                Some(Expression::Identifier(name.clone()))
+            }
+            Token::Identifier(fn_name) => {
+                if let Some(fn_info) = self.fn_list.iter().find(|f| &f.name == fn_name) {
+                    let mut inputs: Vec<String> = vec![];
+                    for _ in 0..fn_info.input {
+                        if let Some(Token::Identifier(name)) = tokens.next() {
+                            inputs.push(name.to_string());
+                        }
+                    }
+                    Some(Expression::Call {
+                        name: fn_name.to_string(),
+                        input: inputs,
+                    })
+                } else {
+                    None
+                }
+            }
+            Token::Literal(value) if value == "1" => Some(Expression::Literal(true)),
+            Token::Literal(value) if value == "0" => Some(Expression::Literal(false)),
             _ => None,
         }
     }
