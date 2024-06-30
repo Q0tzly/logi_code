@@ -128,7 +128,6 @@ impl Parser {
                     iter.next();
                     list += 1;
                 }
-                println!("{:?}", iter.peek());
                 if Some(&Token::Delimiter(":".to_string())) == iter.next() {
                     if let Some(expression) = self.parse_expression(&mut iter) {
                         if iter.peek().is_none() {
@@ -254,8 +253,7 @@ mod tests {
         parser.parse();
         let ast = parser.get_ast();
         let error = parser.get_error();
-        println!("{:?}", parser.fn_list);
-        println!("Error:\n{:?}", error);
+        println!("Error: {:?}", error);
         assert_eq!(
             ast,
             &vec![ASTNode::Statement(Statement::Input(vec!["B".to_string()]))]
