@@ -1,0 +1,5 @@
+# AND Operator
+input : A B 
+and A B : not or not A not B
+C : and A B
+out : C

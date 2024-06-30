@@ -1,6 +1,9 @@
+use logi_code::new;
 use logi_code::{Evaluator, Parser, Tokenizer};
 
 fn main() {
+    let inputs = new();
+    /*
     let inputs: Vec<String> = vec![
         "input : A".to_string(),
         "B : 1".to_string(),
@@ -8,6 +11,7 @@ fn main() {
         "C : and A B".to_string(),
         "out : A B C".to_string(),
     ];
+    */
 
     let mut tokenizer = Tokenizer::new(inputs);
     tokenizer.tokenize();

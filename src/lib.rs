@@ -10,4 +10,5 @@ mod evaluator;
 pub use evaluator::Evaluator;
 
 mod utils;
+pub use utils::new;
 pub use utils::std_input;
