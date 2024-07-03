@@ -1,0 +1,22 @@
+# 2bit Adder Logic
+
+and A B : not or not A not B
+xor A B : or and A not B and not A B
+
+c X Y Z : or and X Y and xor X Y Z
+s X Y Z : xor xor X Y Z
+
+input : X Y
+input : A B
+
+Z : 0
+
+Cone : c X A Z
+Sone : s X A Z
+
+Ctwo : c Y B Sone
+Stwo : s Y B Sone
+
+out : X Y
+out : A B
+out : Cone Ctwo Stwo

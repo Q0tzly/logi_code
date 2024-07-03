@@ -1,0 +1,29 @@
+# 4bit Adder Logic
+
+and A B : not or not A not B
+xor A B : or and A not B and not A B
+
+c X Y Z : or and X Y and xor X Y Z
+s X Y Z : xor xor X Y Z
+
+input : Xzero Xone Xtwo Xthree
+input : Yzero Yone Ytwo Ythree
+
+Z : 0
+
+Cone : c Xzero Yzero Z
+Szero : s Xzero Yzero Z
+
+Ctwo : c Xone Yone Cone
+Sone : s Xone Yone Cone
+
+Cthree : c Xtwo Ytwo Ctwo
+Stwo : s Xtwo Ytwo Ctwo
+
+Cfour : c Xthree Ythree Cthree
+Sthree : s Xthree Ythree Cthree
+
+out : Xzero Xone Xtwo Xthree
+out : Yzero Yone Ytwo Ythree
+#out : Cfour Sthree Stwo Sone Szero
+out : Szero Sone Stwo Sthree Cfour
