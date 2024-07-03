@@ -1,0 +1,8 @@
+# AND Logic with NAND
+
+nand A B : or not A not B
+and A B : nand nand A B nand A B
+
+input : A B
+C : and A B
+out : C

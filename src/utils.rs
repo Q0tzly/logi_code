@@ -1,7 +1,37 @@
+use std::env;
+use std::fs::File;
+use std::io::prelude::*;
+use std::io::BufReader;
+use std::path::Path;
+
 use std::io::{self, Write};
 use termion::event::Key;
 use termion::input::TermRead;
 use termion::raw::IntoRawMode;
+
+pub fn new() -> Vec<String> {
+    let args: Vec<String> = env::args().collect();
+    if args.len() > 0 {
+        file_input(args[1].clone())
+    } else {
+        panic!("yet");
+    }
+}
+
+fn file_input(path: String) -> Vec<String> {
+    let path = Path::new(&path);
+    let f = match File::open(&path) {
+        Err(_) => panic!("couldn't open "),
+        Ok(file) => file,
+    };
+
+    let reader = BufReader::new(f);
+    let mut result = vec![];
+    for line in reader.lines() {
+        result.push(line.unwrap());
+    }
+    return result;
+}
 
 pub fn std_input(options: &Vec<String>) -> Vec<bool> {
     let stdout = io::stdout().into_raw_mode().unwrap();

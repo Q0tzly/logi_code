@@ -1,0 +1,9 @@
+# XOR Logic
+
+and A B : not or not A not B
+
+xor A B : or and A not B and not A B
+
+input : A B
+C : xor A B
+out : C
