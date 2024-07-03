@@ -1,0 +1,13 @@
+[package]
+name = "logi_code"
+version = "0.5.0"
+edition = "2021"
+
+[dependencies]
+termion = "1.5"
+
+[dev-dependencies]
+
+[[bin]]
+name="logi"
+path="src/main.rs"

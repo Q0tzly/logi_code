@@ -1,0 +1,7 @@
+# AND Logic
+
+and A B : not or not A not B
+
+input : A B 
+C : and A B
+out : C
