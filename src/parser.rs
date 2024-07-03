@@ -92,7 +92,6 @@ impl Parser {
                         }
                         while let Some(Token::Identifier(name)) = iter.next() {
                             inputs.push(name.clone());
-                            println!("while");
                         }
                         return Ok(ASTNode::Statement(Statement::Input(inputs)));
                     }
