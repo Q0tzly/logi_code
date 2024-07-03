@@ -14,7 +14,6 @@ pub fn new() -> Vec<String> {
     if args.len() > 0 {
         file_input(args[1].clone())
     } else {
-        //dialogue_input()
         panic!("yet");
     }
 }

@@ -2,7 +2,7 @@ use crate::lexer::Token;
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum Expression {
-    Identifier(String), // Variable
+    Identifier(String),
     Literal(bool),
     NOT {
         operand: Box<Expression>,
@@ -11,7 +11,6 @@ pub enum Expression {
         left: Box<Expression>,
         right: Box<Expression>,
     },
-    // Function
     Call {
         name: String,
         input: Vec<Expression>,
@@ -45,7 +44,6 @@ pub struct Fn {
     input: u32,
 }
 
-// 現在のpositionとかで、inputsを複製しなくてもいい書き方に書き換える
 #[derive(Debug)]
 pub struct Parser {
     inputs: Vec<Vec<Token>>,
@@ -221,7 +219,6 @@ mod tests {
     #[test]
     fn test_parser() {
         let input: Vec<Vec<Token>> = vec![
-            //clear
             vec![
                 Token::Keyword("input".to_string()),
                 Token::Delimiter(":".to_string()),
@@ -239,7 +236,6 @@ mod tests {
                 Token::Operator("not".to_string()),
                 Token::Identifier("B".to_string()),
             ],
-            //clear
             vec![
                 Token::Identifier("B".to_string()),
                 Token::Delimiter(":".to_string()),
@@ -255,9 +251,7 @@ mod tests {
                 Token::Identifier("B".to_string()),
                 Token::Literal("0".to_string()),
             ],
-            //clear
             vec![],
-            //clear
             vec![
                 Token::Keyword("out".to_string()),
                 Token::Delimiter(":".to_string()),
