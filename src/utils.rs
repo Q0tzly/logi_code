@@ -1,5 +1,4 @@
 use std::env;
-use std::error;
 use std::fs::File;
 use std::io::prelude::*;
 use std::io::BufReader;
@@ -13,18 +12,40 @@ use termion::raw::IntoRawMode;
 
 pub fn new() -> Vec<String> {
     let args: Vec<String> = env::args().collect();
-    if args.is_empty() {
-        file_input(args[1].clone())
-    } else {
-        error("Error: Missing Arguments");
-        vec!["".to_string()]
+    if args.len() > 1 {
+        let file_input: Result<Vec<String>, _> = match args[1].as_str() {
+            "help" => {
+                help();
+                exit(0)
+            }
+            "run" => {
+                if args.len() == 3 {
+                    Ok(file_input(args[2].clone()))
+                } else {
+                    Err("Usage: logi run <file>")
+                }
+            }
+            _ => Err("Invalid command. If confirm usage, type `logi help`."),
+        };
+
+        if let Ok(input) = file_input {
+            return input;
+        } else {
+            eprintln!("{}", file_input.unwrap_err());
+            exit(1);
+        }
     }
+    eprintln!("Error: Missing arguments. If confirm usage, type `logi help`.");
+    exit(0);
 }
 
 fn file_input(path: String) -> Vec<String> {
     let path = Path::new(&path);
     let f = match File::open(path) {
-        Err(_) => panic!("couldn't open "),
+        Err(_) => {
+            eprintln!("Error: Couldn't open file.");
+            exit(0);
+        }
         Ok(file) => file,
     };
 
@@ -34,6 +55,10 @@ fn file_input(path: String) -> Vec<String> {
         result.push(line.unwrap());
     }
     result
+}
+
+fn help() {
+    println!("Usage\n  logi <option>\nOptions\n  help : put usage\n  run  : run file.lc");
 }
 
 pub fn std_input(options: &[String]) -> Vec<bool> {
@@ -85,9 +110,4 @@ pub fn std_input(options: &[String]) -> Vec<bool> {
     stdout.flush().unwrap();
 
     selections
-}
-
-fn error(err: &str) {
-    eprintln!("{}", err);
-    exit(0);
 }
