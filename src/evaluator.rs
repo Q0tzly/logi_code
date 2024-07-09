@@ -41,8 +41,8 @@ impl Evaluator {
     }
 
     fn evaluate_statement(&mut self, node: &ASTNode) {
-        match node {
-            ASTNode::Statement(statement) => match statement {
+        if let ASTNode::Statement(statement) = node {
+            match statement {
                 Statement::BindVariable { name, expression } => {
                     let value = self.evaluate_expression(expression);
                     self.var_list.push(VarInfo {
@@ -71,8 +71,7 @@ impl Evaluator {
                 Statement::Output(outputs) => {
                     self.evaluate_output(outputs);
                 }
-            },
-            _ => (),
+            }
         }
     }
 
@@ -147,7 +146,6 @@ impl Evaluator {
                     let value = match var_info.value {
                         true => "■".to_string(),
                         false => "□".to_string(),
-                        _ => panic!("Unexpected literals"),
                     };
                     print!("{} {}", name, value);
                 }

@@ -78,7 +78,7 @@ impl Parser {
         }
     }
 
-    fn parse_statement(&mut self, input: &Vec<Token>) -> Result<ASTNode, String> {
+    fn parse_statement(&mut self, input: &[Token]) -> Result<ASTNode, String> {
         let mut iter = input.iter().peekable();
         if let Some(Token::Keyword(keyword)) = iter.peek() {
             match keyword.as_str() {

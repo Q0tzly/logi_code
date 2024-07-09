@@ -24,13 +24,13 @@ impl Tokenizer {
     pub fn tokenize(&mut self) {
         for line in &self.inputs {
             let mut token = vec![];
-            if Self::is_comment(&line) {
+            if Self::is_comment(line) {
                 continue;
             } else {
                 let columns = line.split_whitespace();
 
                 for column in columns {
-                    let _ = token.push(if Self::is_keyword(column) {
+                    token.push(if Self::is_keyword(column) {
                         Token::Keyword(column.to_string())
                     } else if Self::is_operator(column) {
                         Token::Operator(column.to_string())
