@@ -19,7 +19,7 @@ cargo install --path .
 ## 実行方法
 拡張子は`.lc`です。
 ``` sh
-logi <path_to_your_file.lc>
+logi run <path_to_your_file.lc>
 ```
 
 ## シンタックス
