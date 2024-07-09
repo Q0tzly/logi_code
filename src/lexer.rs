@@ -24,13 +24,14 @@ impl Tokenizer {
     pub fn tokenize(&mut self) {
         for line in &self.inputs {
             let mut token = vec![];
-            if Self::is_comment(&line) {
+            if Self::is_comment(line) {
+                let _ = &self.tokens.push(vec![]);
                 continue;
             } else {
                 let columns = line.split_whitespace();
 
                 for column in columns {
-                    let _ = token.push(if Self::is_keyword(column) {
+                    token.push(if Self::is_keyword(column) {
                         Token::Keyword(column.to_string())
                     } else if Self::is_operator(column) {
                         Token::Operator(column.to_string())
@@ -75,7 +76,7 @@ impl Tokenizer {
     }
 
     fn is_comment(input: &str) -> bool {
-        input.starts_with("//")
+        input.starts_with("//") || input.starts_with("#")
     }
 }
 
@@ -86,12 +87,15 @@ mod tests {
     #[test]
     fn test_lexer() {
         let input: Vec<String> = vec![
+            "".to_string(),
             "input : A\n".to_string(),
             "and A B : not or not A not B".to_string(),
             "B : 1\n".to_string(),
             "C : and A B\n".to_string(),
             "".to_string(),
             "out : C".to_string(),
+            "//".to_string(),
+            "#".to_string(),
         ];
 
         let mut tokenizer = Tokenizer::new(input);
