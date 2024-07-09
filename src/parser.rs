@@ -45,11 +45,17 @@ pub struct Fn {
 }
 
 #[derive(Debug)]
+pub struct Position {
+    line: u32,
+}
+
+#[derive(Debug)]
 pub struct Parser {
     inputs: Vec<Vec<Token>>,
     ast: Vec<ASTNode>,
     error: Vec<String>,
     fn_list: Vec<Fn>,
+    position: Position,
 }
 
 impl Parser {
@@ -59,21 +65,26 @@ impl Parser {
             ast: vec![],
             error: vec![],
             fn_list: vec![],
+            position: Position { line: 0 },
         }
     }
 
     pub fn parse(&mut self) {
         for line in self.inputs.clone() {
+            self.position.line += 1;
+
             if line.is_empty() {
                 continue;
             }
+
             let result = &self.parse_statement(&line);
             match result {
                 Ok(node) => {
                     self.ast.push(node.clone());
-                    self.error.push("".to_string())
                 }
-                Err(e) => self.error.push(e.to_string()),
+                Err(e) => self
+                    .error
+                    .push(format!("{}: {}", self.position.line, e.to_string(),)),
             }
         }
     }
@@ -110,7 +121,7 @@ impl Parser {
                         return Ok(ASTNode::Statement(Statement::Output(outputs)));
                     }
                 }
-                _ => return Err("Error".to_string()),
+                _ => return Err("This Keyword does not exist.".to_string()),
             }
         }
 
@@ -126,6 +137,7 @@ impl Parser {
                             expression: Box::new(expression),
                         }));
                     }
+                    return Err("`:` is followed by an expression or a literal.".to_string());
                 }
             } else {
                 let mut inputs = vec![];
@@ -149,13 +161,16 @@ impl Parser {
                             }));
                         }
                     }
+                } else {
+                    return Err("`:` is followed by an expression or a literal.".to_string());
                 }
             }
         }
-        Err("Unable to parse line".to_string())
+
+        Err("This syntax does not exist.".to_string())
     }
 
-    fn parse_expression<'a, I>(&self, tokens: &mut std::iter::Peekable<I>) -> Option<Expression>
+    fn parse_expression<'a, I>(&mut self, tokens: &mut std::iter::Peekable<I>) -> Option<Expression>
     where
         I: Iterator<Item = &'a Token>,
     {
@@ -193,6 +208,7 @@ impl Parser {
                         input: inputs,
                     })
                 } else {
+                    //"Undefined bind name."
                     None
                 }
             }
@@ -256,7 +272,9 @@ mod tests {
                 Token::Delimiter(":".to_string()),
                 Token::Identifier("C".to_string()),
             ],
+            vec![Token::Error("HEllo".to_string())],
         ];
+        //let input = vec![];
         let mut parser = Parser::new(input);
         parser.parse();
         let ast = parser.get_ast();

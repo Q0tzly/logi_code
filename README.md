@@ -1,4 +1,4 @@
-# The LogiCode Programming Language - Pre 0.5.0
+# The LogiCode Programming Language - Pre 0.6.0
 LogiCodeは、組み合わせ回路を定義、実行するためのスクリプト言語です。シンプルなシンタックスと最小限の演算子を提供します。
 
 ## 特徴
@@ -25,6 +25,10 @@ logi run <path_to_your_file.lc>
 ## シンタックス
 LogiCodeのシンタックスは非常にシンプルです。文は四つしかありません。
 以下に基本的な構成要素を説明します。
+
+### コメント
+`// から行末までがコメント`
+`# から行末までがコメント`
 
 ### 文
 #### Bind
