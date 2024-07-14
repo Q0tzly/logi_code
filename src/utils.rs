@@ -58,7 +58,9 @@ fn file_input(path: String) -> Vec<String> {
 }
 
 fn help() {
-    println!("Usage\n  logi <option>\nOptions\n  help : put usage\n  run  : run file.lc");
+    println!(
+        "Usage\n  logi <option>\nOptions\n  help          : put usage\n  run <file.lc> : run file.lc"
+    );
 }
 
 pub fn std_input(options: &[String]) -> Vec<bool> {
