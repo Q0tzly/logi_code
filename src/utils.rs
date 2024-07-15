@@ -10,6 +10,8 @@ use termion::event::Key;
 use termion::input::TermRead;
 use termion::raw::{IntoRawMode, RawTerminal};
 
+use crate::Evaluator;
+
 pub fn new() -> Vec<String> {
     let args: Vec<String> = env::args().collect();
     if args.len() > 1 {
@@ -61,6 +63,26 @@ fn help() {
     println!(
         "Usage\n  logi <option>\nOptions\n  help          : put usage\n  run <file.lc> : run file.lc"
     );
+}
+pub fn stdout(evaluator: &Evaluator, outputs: &[String]) {
+    let mut index = 0;
+    print!("out > ");
+    for name in outputs {
+        index += 1;
+        for var_info in &evaluator.var_list {
+            if &var_info.name == name {
+                let value = match var_info.value {
+                    true => "■".to_string(),
+                    false => "□".to_string(),
+                };
+                print!("{} {}", name, value);
+            }
+        }
+        if index < outputs.len() {
+            print!(" : ");
+        }
+    }
+    println!();
 }
 
 pub fn stdin(options: &[String]) -> Vec<bool> {
