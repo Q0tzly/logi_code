@@ -3,13 +3,12 @@ use core::panic;
 use crate::parser::ASTNode;
 use crate::parser::Expression;
 use crate::parser::Statement;
-//use crate::utils::std_input;
-use crate::utils::stdin;
+use crate::utils::{stdin, stdout};
 
 #[derive(Debug)]
-struct VarInfo {
-    name: String,
-    value: bool,
+pub struct VarInfo {
+    pub name: String,
+    pub value: bool,
 }
 
 #[derive(Clone, Debug)]
@@ -22,7 +21,7 @@ struct FnInfo {
 #[derive(Debug)]
 pub struct Evaluator {
     inputs: Vec<ASTNode>,
-    var_list: Vec<VarInfo>,
+    pub var_list: Vec<VarInfo>,
     fn_list: Vec<FnInfo>,
 }
 
@@ -70,7 +69,7 @@ impl Evaluator {
                     }
                 }
                 Statement::Output(outputs) => {
-                    self.evaluate_output(outputs);
+                    stdout(&self, outputs);
                 }
             }
         }
@@ -135,27 +134,6 @@ impl Evaluator {
                 }
             }
         }
-    }
-
-    fn evaluate_output(&self, outputs: &[String]) {
-        let mut index = 0;
-        print!("out > ");
-        for name in outputs {
-            index += 1;
-            for var_info in &self.var_list {
-                if &var_info.name == name {
-                    let value = match var_info.value {
-                        true => "■".to_string(),
-                        false => "□".to_string(),
-                    };
-                    print!("{} {}", name, value);
-                }
-            }
-            if index < outputs.len() {
-                print!(" : ");
-            }
-        }
-        println!();
     }
 }
 
