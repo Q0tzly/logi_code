@@ -9,7 +9,6 @@ repository = "https://github.com/Q0tzly/logi_code"
 license = "Apache-2.0"
 readme = "README.md"
 
-documentation = "..."
 keywords = ["language", "interpreter", "command"]
 
 [dependencies]
