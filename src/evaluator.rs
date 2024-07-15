@@ -3,7 +3,8 @@ use core::panic;
 use crate::parser::ASTNode;
 use crate::parser::Expression;
 use crate::parser::Statement;
-use crate::utils::std_input;
+//use crate::utils::std_input;
+use crate::utils::stdin;
 
 #[derive(Debug)]
 struct VarInfo {
@@ -60,7 +61,7 @@ impl Evaluator {
                     expression: *expression.clone(),
                 }),
                 Statement::Input(inputs) => {
-                    let values = std_input(inputs);
+                    let values = stdin(inputs);
                     for (name, value) in inputs.iter().zip(values.into_iter()) {
                         self.var_list.push(VarInfo {
                             name: name.clone(),
