@@ -1,12 +1,19 @@
 [package]
 name = "logi_code"
-version = "0.7.2"
+version = "1.0.0"
+authors = ["Q0tzly"]
 edition = "2021"
+
+description = "A scripting language do executing combinational circuits"
+repository = "https://github.com/Q0tzly/logi_code"
+license = "Apache-2.0"
+readme = "README.md"
+
+documentation = "..."
+keywords = ["language", "interpreter", "command"]
 
 [dependencies]
 termion = "1.5"
-
-[dev-dependencies]
 
 [[bin]]
 name="logi"

@@ -1,4 +1,4 @@
-# The LogiCode Programming Language - Pre 0.6.0
+# The LogiCode Programming Language - 1.0.0
 LogiCodeは、組み合わせ回路を定義、実行するためのスクリプト言語です。シンプルなシンタックスと最小限の演算子を提供します。
 
 ## 特徴
