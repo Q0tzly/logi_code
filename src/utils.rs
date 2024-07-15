@@ -1,14 +1,16 @@
 use std::env;
 use std::fs::File;
-use std::io::prelude::*;
-use std::io::BufReader;
+use std::io::{self, prelude::*, BufReader, Read, Stdout, Write};
 use std::path::Path;
 use std::process::exit;
 
-use std::io::{self, Write};
+use termion::clear::CurrentLine;
+use termion::cursor::Goto;
 use termion::event::Key;
 use termion::input::TermRead;
-use termion::raw::IntoRawMode;
+use termion::raw::{IntoRawMode, RawTerminal};
+
+use crate::Evaluator;
 
 pub fn new() -> Vec<String> {
     let args: Vec<String> = env::args().collect();
@@ -58,31 +60,48 @@ fn file_input(path: String) -> Vec<String> {
 }
 
 fn help() {
-    println!("Usage\n  logi <option>\nOptions\n  help : put usage\n  run  : run file.lc");
+    println!(
+        "Usage\n  logi <option>\nOptions\n  help          : put usage\n  run <file.lc> : run file.lc"
+    );
+}
+pub fn stdout(evaluator: &Evaluator, outputs: &[String]) {
+    let mut index = 0;
+    print!("out > ");
+    for name in outputs {
+        index += 1;
+        for var_info in &evaluator.var_list {
+            if &var_info.name == name {
+                let value = match var_info.value {
+                    true => "■".to_string(),
+                    false => "□".to_string(),
+                };
+                print!("{} {}", name, value);
+            }
+        }
+        if index < outputs.len() {
+            print!(" : ");
+        }
+    }
+    println!();
 }
 
-pub fn std_input(options: &[String]) -> Vec<bool> {
-    let stdout = io::stdout().into_raw_mode().unwrap();
-    let mut stdout = io::BufWriter::new(stdout);
+pub fn stdin(options: &[String]) -> Vec<bool> {
+    let mut stdout = io::stdout().into_raw_mode().unwrap();
 
     let mut selections = vec![false; options.len()];
     let mut selected_index = 0;
 
-    write!(stdout, "{}[2J", 27 as char).unwrap();
     loop {
-        write!(stdout, "{}[H", 27 as char).unwrap();
-
         for (index, option) in options.iter().enumerate() {
             write!(
                 stdout,
-                " {} {} {}",
+                "{} {} {}",
                 if index == selected_index { ">" } else { " " },
                 option,
                 if selections[index] { "■" } else { "□" }
             )
             .unwrap();
         }
-
         stdout.flush().unwrap();
 
         match io::stdin().keys().next().unwrap().unwrap() {
@@ -95,19 +114,66 @@ pub fn std_input(options: &[String]) -> Vec<bool> {
             Key::Char('\n') => break,
             _ => {}
         }
+        clear_line(&mut stdout);
     }
 
-    write!(stdout, "{}[H", 27 as char).unwrap();
-    write!(stdout, "in  > ").unwrap();
-    for (index, (option, selected)) in options.iter().zip(selections.iter()).enumerate() {
-        write!(stdout, "{} {}", option, if *selected { "■" } else { "□" }).unwrap();
-        if index < options.len() - 1 {
-            write!(stdout, " : ").unwrap();
+    if let Some(row) = get_row(&mut stdout) {
+        write!(stdout, "{}", Goto(1, row)).unwrap();
+
+        clear_line(&mut stdout);
+
+        for (index, (option, selected)) in options.iter().zip(selections.iter()).enumerate() {
+            print!("{} {}", option, if *selected { "■" } else { "□" });
+            if index < options.len() - 1 {
+                print!(" : ");
+            }
         }
+        write!(stdout, "{}", Goto(1, row)).unwrap();
     }
-    writeln!(stdout).unwrap();
-    write!(stdout, "\n\r").unwrap();
-    stdout.flush().unwrap();
+    println!("");
 
     selections
+}
+
+fn clear_line(stdout: &mut RawTerminal<Stdout>) {
+    if let Some(row) = get_row(stdout) {
+        write!(stdout, "{}", Goto(1, row)).unwrap();
+        write!(stdout, "{}", CurrentLine).unwrap();
+    }
+}
+
+fn get_row(stdout: &mut RawTerminal<Stdout>) -> Option<u16> {
+    let stdin = io::stdin();
+    let mut stdin_bytes = stdin.bytes();
+
+    write!(stdout, "\x1B[6n").unwrap();
+    stdout.flush().unwrap();
+
+    let mut response = Vec::new();
+    let mut started = false;
+
+    while let Some(Ok(byte)) = stdin_bytes.next() {
+        if byte == b'\x1B' {
+            started = true;
+        }
+
+        if started {
+            response.push(byte);
+
+            if byte == b'R' {
+                break;
+            }
+        }
+    }
+
+    let response = String::from_utf8_lossy(&response);
+
+    if let Some(pos) = response.strip_prefix("\x1B[") {
+        if let Some((row, _)) = pos.split_once(';') {
+            if let Ok(row) = row.parse::<u16>() {
+                return Some(row);
+            }
+        }
+    }
+    None
 }

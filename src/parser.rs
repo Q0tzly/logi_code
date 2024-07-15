@@ -96,8 +96,12 @@ impl Parser {
                 "input" => {
                     iter.next();
                     if Some(&Token::Delimiter(":".to_string())) == iter.next() {
+                        if let None = iter.peek() {
+                            return Err("After the `:` comes an identifier that starts with a capital letter.".to_string());
+                        }
                         let mut inputs = vec![];
                         let mut iter_all = iter.clone().cloned();
+
                         if !iter_all.all(|token| matches!(token, Token::Identifier(_))) {
                             return Err("Expected all tokens to be identifiers".to_string());
                         }
@@ -105,20 +109,27 @@ impl Parser {
                             inputs.push(name.clone());
                         }
                         return Ok(ASTNode::Statement(Statement::Input(inputs)));
+                    } else {
+                        return Err("Expected `:` after `input`.".to_string());
                     }
                 }
                 "out" => {
                     iter.next();
                     if Some(&Token::Delimiter(":".to_string())) == iter.next() {
+                        if let None = iter.peek() {
+                            return Err("After the `:` comes an identifier that starts with a capital letter.".to_string());
+                        }
                         let mut outputs = vec![];
                         let mut iter_all = iter.clone().cloned();
                         if !iter_all.all(|token| matches!(token, Token::Identifier(_))) {
-                            return Err("Expected all tokens to be identifiers".to_string());
+                            return Err("Expected all tokens to be identifiers.".to_string());
                         }
                         while let Some(Token::Identifier(name)) = iter.next() {
                             outputs.push(name.clone());
                         }
                         return Ok(ASTNode::Statement(Statement::Output(outputs)));
+                    } else {
+                        return Err("Expected `:` after `out`".to_string());
                     }
                 }
                 _ => return Err("This Keyword does not exist.".to_string()),
@@ -126,44 +137,51 @@ impl Parser {
         }
 
         if let Some(Token::Identifier(name)) = iter.next() {
-            if name.chars().next().unwrap().is_uppercase()
-                && Some(&Token::Delimiter(":".to_string())) == iter.peek().cloned()
-            {
-                iter.next();
-                if let Some(expression) = self.parse_expression(&mut iter) {
-                    if iter.peek().is_none() {
-                        return Ok(ASTNode::Statement(Statement::BindVariable {
-                            name: name.clone(),
-                            expression: Box::new(expression),
-                        }));
-                    }
-                    return Err("`:` is followed by an expression or a literal.".to_string());
-                }
-            } else {
-                let mut inputs = vec![];
-                let mut list: u32 = 0;
-                while let Some(Token::Identifier(name)) = iter.peek() {
-                    inputs.push(name.clone());
+            if name.chars().next().unwrap().is_uppercase() {
+                if Some(&Token::Delimiter(":".to_string())) == iter.peek().cloned() {
                     iter.next();
-                    list += 1;
-                }
-                if Some(&Token::Delimiter(":".to_string())) == iter.next() {
                     if let Some(expression) = self.parse_expression(&mut iter) {
                         if iter.peek().is_none() {
-                            let _ = &self.fn_list.push(Fn {
+                            return Ok(ASTNode::Statement(Statement::BindVariable {
                                 name: name.clone(),
-                                input: list,
-                            });
-                            return Ok(ASTNode::Statement(Statement::BindFunction {
-                                name: name.clone(),
-                                input: inputs,
                                 expression: Box::new(expression),
                             }));
                         }
                     }
-                } else {
                     return Err("`:` is followed by an expression or a literal.".to_string());
+                } else {
+                    return Err("`:` is expected after the identifier.".to_string());
                 }
+            } else if name.chars().next().unwrap().is_lowercase() {
+                if let Some(Token::Identifier(_)) = iter.peek() {
+                    let mut inputs = vec![];
+                    let mut list: u32 = 0;
+                    while let Some(Token::Identifier(name)) = iter.peek() {
+                        inputs.push(name.clone());
+                        iter.next();
+                        list += 1;
+                    }
+                    if Some(&Token::Delimiter(":".to_string())) == iter.next() {
+                        if let Some(expression) = self.parse_expression(&mut iter) {
+                            if iter.peek().is_none() {
+                                let _ = &self.fn_list.push(Fn {
+                                    name: name.clone(),
+                                    input: list,
+                                });
+                                return Ok(ASTNode::Statement(Statement::BindFunction {
+                                    name: name.clone(),
+                                    input: inputs,
+                                    expression: Box::new(expression),
+                                }));
+                            }
+                        } else {
+                            return Err("Expected expression or literal after the `:`.".to_string());
+                        }
+                    } else {
+                        return Err("`:` come after the indentifier.".to_string());
+                    }
+                }
+                return Err("When binding in lower case, the identifier comes after.".to_string());
             }
         }
 
