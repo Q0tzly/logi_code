@@ -1,4 +1,4 @@
-# Logi Code - 1.0.0
+# Logi Code - 1.0.1
 LogiCode is a scripting language for defining and executing combinatorial circuits.
 It offers a simple syntax and a minimal number of operators.
 
