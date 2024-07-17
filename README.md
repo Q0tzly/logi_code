@@ -25,7 +25,7 @@ logi run <path_to_your_file.lc>
 If you want know the syntax of one, should check documents.
 
 ## Samples
-The detail examples are the [examples](https://github.com/Q0tzly/logi_code/tree/main/examples)directory.
+The detail examples are the [examples](https://github.com/Q0tzly/logi_code/tree/main/examples) directory.
 
 ## Contribution
 When you find bug, issue the issue.
