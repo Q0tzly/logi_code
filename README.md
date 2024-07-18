@@ -1,5 +1,8 @@
 # Logi Code - 1.0.1
-LogiCode is a scripting language for defining and executing combinatorial circuits.
+
+[[English](https://github.com/Q0tzly/logi_code/blob/main/README.md) | [日本語](https://github.com/Q0tzly/logi_code/blob/main/docs/README.ja.md)]
+
+Logi Code is a scripting language for defining and executing combinatorial circuits.
 It offers a simple syntax and a minimal number of operators.
 
 ## Features
@@ -32,4 +35,4 @@ When you find bug, issue the issue.
 When you hope contribution, send pull request.
 
 ## License
-LogiCode is the Apache License.
+Logi Code is the Apache License.
