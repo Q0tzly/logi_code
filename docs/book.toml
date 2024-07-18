@@ -1,0 +1,6 @@
+[book]
+authors = ["Q0tzly"]
+language = ["en", "ja"]
+multilingual = true
+src = "src"
+title = "The Logi Code Book"
