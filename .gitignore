@@ -19,4 +19,5 @@ Cargo.lock
 /target
 
 # mdbook
-/docs/book
+/docs/en/book
+/docs/ja/book
