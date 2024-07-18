@@ -3,17 +3,24 @@
 - 標準ライブラリを実装する。
 - 標準ライブラリはVec<ASTNode>で定義される。
 
+## Implementation README and Version : 1.0.2
+- logi {v, version}のサブコマンドを実装する。
+
+## Implementation README and Version : 1.1.0
+- 英語のドキュメントを実装する。
+
+## Implementation README and Version : 1.0.1
+- README.mdを英語で記述する。
+
 ## Release Version : 1.0.0
 - 初期リリースをする。
 - crate.ioにアップしたり、GitHubにリリースバージョンの実行ファイルを置いたりする。
 
-## Implementation AnyThings : 0.9.0
+## Implementation AnyThings : 0.7.1
 - README.mdを書いたり、いろんなところを調整する。
 
-## Implementation Error Handling : 0.8.0
+## Implementation Error Handling : 0.7.0
 - Parser、Evaluatorのエラーハンドリングの実装を完了させる。
-
-## Implementation Interpreter : 0.7.0
 - Interpreter(main.rs)の実装を完了させる。
 
 ## Implementation Utils : 0.6.0
