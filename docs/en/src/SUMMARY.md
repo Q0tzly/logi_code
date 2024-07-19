@@ -4,6 +4,7 @@
 
 # User Guide
 - [Getting Started](./get_start.md)
+- [How to use Command](./command.md)
 
 # Syntax and Semantics
 - [Basic Syntax](./basic_syntax.md)
@@ -11,4 +12,5 @@
 - [Basic Expression](./basic_expression.md)
 
 # Samples
-- [And Operator]()
+- [Sample](./sample.md)
+- [And Operator](./samples/and.md)
