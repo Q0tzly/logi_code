@@ -1,9 +1,8 @@
-# Logi Code - 1.0.1
-
-[[English](https://github.com/Q0tzly/logi_code/blob/main/README.md) | [日本語](https://github.com/Q0tzly/logi_code/blob/main/docs/README.ja.md)]
-
+# Logi Code - 1.2.0
 Logi Code は、組み合わせ回路を定義および実行するためのスクリプト言語です。
 シンプルな構文と最小限の演算子を提供します。
+
+[[English](https://github.com/Q0tzly/logi_code/blob/main/README.md) | [日本語](https://github.com/Q0tzly/logi_code/blob/main/docs/README.ja.md)]
 
 ## 機能
 - シンプルな構文

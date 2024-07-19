@@ -17,3 +17,7 @@ Cargo.lock
 # Added by cargo
 
 /target
+
+# mdbook
+/docs/en/book
+/docs/ja/book
