@@ -1,4 +1,4 @@
-# Logi Code - 1.0.1
+# Logi Code - 1.2.0
 
 [[English](https://github.com/Q0tzly/logi_code/blob/main/README.md) | [日本語](https://github.com/Q0tzly/logi_code/blob/main/docs/README.ja.md)]
 
