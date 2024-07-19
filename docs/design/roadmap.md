@@ -3,10 +3,13 @@
 - 標準ライブラリを実装する。
 - 標準ライブラリはVec<ASTNode>で定義される。
 
-## Implementation README and Version : 1.0.2
+## Implementation Sub Command and Version : 1.3.0
 - logi {v, version}のサブコマンドを実装する。
 
-## Implementation README and Version : 1.1.0
+## Implementation Documents and Verview : 1.2.0
+- 日本語のドキュメントを実装する。
+
+## Implementation Documents and Version : 1.1.0
 - 英語のドキュメントを実装する。
 
 ## Implementation README and Version : 1.0.1
