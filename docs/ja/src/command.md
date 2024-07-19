@@ -5,17 +5,17 @@
 基本のコマンドは以下の２つです。
 それぞれ説明します。
 
-## logi help
+### logi help
 
 ``` sh
 logi help
 ```
 このコマンドは、ヘルプを表示します。
 
-## logi run
+### logi run
 
 ``` sh
-logi run
+logi run <file_name.lc>
 ```
 
 このコマンドは、`file_name.lc`を実行するときに使用します。
