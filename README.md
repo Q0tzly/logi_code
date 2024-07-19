@@ -1,9 +1,8 @@
 # Logi Code - 1.2.0
-
-[[English](https://github.com/Q0tzly/logi_code/blob/main/README.md) | [日本語](https://github.com/Q0tzly/logi_code/blob/main/docs/README.ja.md)]
-
 Logi Code is a scripting language for defining and executing combinatorial circuits.
 It offers a simple syntax and a minimal number of operators.
+
+[[English](https://github.com/Q0tzly/logi_code/blob/main/README.md) | [日本語](https://github.com/Q0tzly/logi_code/blob/main/docs/README.ja.md)]
 
 ## Features
 - Simple syntax
