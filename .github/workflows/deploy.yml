@@ -6,31 +6,22 @@ on:
       - main
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '20'
+    - name: Install mdBook
+      run: cargo install mdbook
 
-    - name: Install dependencies
-      run: npm install -g gitbook-cli
-
-    - name: Build GitBook
-      run: |
-        gitbook install ./docs/en
-        gitbook build ./docs/en
-        gitbook install ./docs/ja
-        gitbook build ./docs/ja
+    - name: Build mdBook
+      run: mdbook build
+      working-directory: ./docs/en
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./docs
-        destination_dir: en
+        publish_dir: ./docs/en/book
